@@ -1,0 +1,22 @@
+server {
+    listen 8080;
+    server_name core.marcuschiu.com;
+
+    allow 54.161.89.224;
+    deny all;
+   
+    access_log logs/core.marcuschiu.com/access.log;
+    error_log  logs/core.marcuschiu.com/error.log;
+    
+    location / {
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+
+        proxy_pass http://192.168.86.218:8888;
+        
+        limit_except GET {
+            deny all;
+        }
+    }
+}

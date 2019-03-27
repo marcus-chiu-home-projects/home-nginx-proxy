@@ -1,0 +1,13 @@
+server {
+    listen 80;
+    server_name 192.168.86.217;
+
+    root /var/www/ui-store-front-build;
+    index index.html index.htm;
+
+    location / {
+         # This will allow you to refresh the page in your angular app
+         # Which will not give you an error 404
+         try_files $uri $uri/ /index.html;
+    }
+} 
