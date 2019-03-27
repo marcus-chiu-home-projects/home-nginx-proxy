@@ -2,7 +2,7 @@ server {
     listen 8080;
     server_name wiki.marcuschiu.com;
 
-    allow 54.161.89.224;
+    allow 3.95.18.164;
     deny all;
    
     access_log logs/wiki.marcuschiu.com/access.log;
