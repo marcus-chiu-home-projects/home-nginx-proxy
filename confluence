@@ -1,14 +1,32 @@
+geo $limit {
+    default 1;
+    192.168.86.0/24 0;
+}
+
+map $limit $limit_key {
+    0 "";
+    1 $binary_remote_addr;
+}
+
+limit_req_zone $limit_key zone=confluencelimit:10m rate=20r/s;
+# limit_req_zone $binary_remote_addr zone=confluencelimit:10m rate=20r/s;
+
 server {
     listen 8080;
+    listen 80;
     server_name confluence.marcuschiu.com;
 
     allow 3.95.18.164;
+    allow  192.168.86.0/24;
     deny all;
-   
+
     access_log logs/confluence.marcuschiu.com/access.log;
     error_log  logs/confluence.marcuschiu.com/error.log;
-    
+
+        
     location / {
+	limit_req zone=confluencelimit burst=20 nodelay;
+
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
         proxy_set_header Host $host;

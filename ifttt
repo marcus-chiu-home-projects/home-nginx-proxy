@@ -1,0 +1,36 @@
+geo $limit {
+    default 1;
+    192.168.86.0/24 0;
+}
+
+map $limit $limit_key {
+    0 "";
+    1 $binary_remote_addr;
+}
+
+limit_req_zone $limit_key zone=iftttlimit:10m rate=2r/s;
+
+# old 
+# limit_req_zone $binary_remote_addr zone=iftttlimit:10m rate=2r/s;
+
+server {
+    listen 8080;
+    server_name ifttt.marcuschiu.com;
+
+    allow 3.95.18.164;
+    allow  192.168.86.0/24;
+    deny all;
+
+    access_log logs/ifttt.marcuschiu.com/access.log;
+    error_log  logs/ifttt.marcuschiu.com/error.log;
+        
+    location / {
+	limit_req zone=iftttlimit burst=1 nodelay;
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+
+        proxy_pass http://192.168.86.28:7070;
+    }
+}

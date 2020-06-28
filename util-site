@@ -1,0 +1,18 @@
+server {
+    listen 8080;
+    server_name util.marcuschiu.com;
+
+    allow 3.95.18.164;
+    deny all;
+   
+    access_log logs/util.marcuschiu.com/access.log;
+    error_log  logs/util.marcuschiu.com/error.log;
+    
+    location / {
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+
+        proxy_pass http://192.168.86.28:9090;
+    }
+}
